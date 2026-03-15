@@ -1,10 +1,6 @@
 import { Handler } from "@netlify/functions";
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-const client = new TextToSpeechClient({
-  credentials: JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}'),
-});
-
 interface RequestBody {
   text: string;
 }
@@ -13,6 +9,22 @@ export const handler: Handler = async (event, context) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
+
+  const rawCreds = process.env.GOOGLE_CLOUD_CREDENTIALS;
+  if (!rawCreds) {
+    console.error('Missing GOOGLE_CLOUD_CREDENTIALS');
+    return { statusCode: 500, body: "Missing GOOGLE_CLOUD_CREDENTIALS" };
+  }
+
+  let credentials: any;
+  try {
+    credentials = JSON.parse(rawCreds);
+  } catch (parseError) {
+    console.error('Failed to parse GOOGLE_CLOUD_CREDENTIALS:', parseError);
+    return { statusCode: 500, body: "Invalid GOOGLE_CLOUD_CREDENTIALS JSON" };
+  }
+
+  const client = new TextToSpeechClient({ credentials });
 
   try {
     const { text } = JSON.parse(event.body || '{}') as RequestBody;
@@ -27,14 +39,22 @@ export const handler: Handler = async (event, context) => {
 
     const [response] = await client.synthesizeSpeech(request);
     
+    if (!response.audioContent) {
+      console.error('Missing audioContent in Text-to-Speech response', response);
+      return { statusCode: 500, body: "Text-to-Speech returned no audio" };
+    }
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "audio/mp3" },
-      body: response.audioContent?.toString('base64') || '',
-      isBase64Encoded: true
+      body: response.audioContent.toString('base64'),
+      isBase64Encoded: true,
     };
-  } catch (error) {
-    console.error('Error:', error);
-    return { statusCode: 500, body: "Error generating speech" };
+  } catch (error: any) {
+    console.error('Error generating speech:', error);
+    return {
+      statusCode: 500,
+      body: `Error generating speech: ${error?.message ?? String(error)}`,
+    };
   }
 };
