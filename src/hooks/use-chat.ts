@@ -168,7 +168,7 @@ export function useChat() {
       { role: "user", content: message } as const,
     ];
 
-    await writeToGoogleSheet(message, 'user');
+    //await writeToGoogleSheet(message, 'user');
 
     setChatHistory(newHistory);
 
@@ -212,7 +212,7 @@ export function useChat() {
     ]);
 
     // Log assistant's message
-    writeToGoogleSheet(fullResponse, 'assistant');
+    //writeToGoogleSheet(fullResponse, 'assistant');
 
     setCurrentChat(null);
 
