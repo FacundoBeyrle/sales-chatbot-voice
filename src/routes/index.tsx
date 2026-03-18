@@ -5,13 +5,13 @@ import { ChatMessage } from "../components/ChatMessage";
 import { appConfig } from "../../config.browser";
 import WelcomeVideo from "../assets/welcome.mp4";
 import { EndMessage } from "../components/EndMessage";
-import { EndMessageMoreInfo } from "../components/EndMessageMoreInfo";
+import { Ticket } from "../components/Ticket";
 
 export default function Index() {
   const [message, setMessage] = useState<string>("");
   const [showBMWButton, setShowBMWButton] = useState(false);
   const [showEndMessage, setShowEndMessage] = useState(false);
-  const [showEndMessageMoreInfo, setShowEndMessageMoreInfo] = useState(false);
+  const [showTicket, setShowTicket] = useState(false);
   const { currentChat, chatHistory, sendMessage, cancel, state, clear, speak, assitantSpeaking } = useChat();
 
   const currentMessage = useMemo(() => {
@@ -44,7 +44,7 @@ export default function Index() {
 
   useEffect(() => {
     const assistantMessageCount = chatHistory.filter((msg) => msg.role === "assistant").length;
-    setShowBMWButton(assistantMessageCount >= 5);
+    setShowBMWButton(assistantMessageCount >= 10);
   }, [chatHistory]);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -136,8 +136,15 @@ export default function Index() {
 
             {currentChat ? <ChatMessage message={currentMessage} /> : null}
           </div>
-          {showEndMessage && <EndMessage />}
-          {showEndMessageMoreInfo && <EndMessageMoreInfo />} 
+          {showEndMessage && (
+            <EndMessage
+              onEmailClick={() => {
+                setShowEndMessage(false);
+                setShowTicket(true);
+              }}
+            />
+          )}
+          {showTicket && <Ticket />} 
           <div ref={bottomRef} />
         </section>
         {showBMWButton && (
@@ -147,7 +154,7 @@ export default function Index() {
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
                 onClick={() => {
-                  setShowEndMessageMoreInfo(true);
+                  setShowTicket(true);
                   setShowEndMessage(false);
                   //log button click
                   const userId = localStorage.getItem("chatUserId");
@@ -173,7 +180,7 @@ export default function Index() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
                 onClick={() => {
                   setShowEndMessage(true);
-                  setShowEndMessageMoreInfo(false);
+                  setShowTicket(false);
                    //log button click
                    const userId = localStorage.getItem("chatUserId");
                    if (!userId) {
