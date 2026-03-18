@@ -65,8 +65,12 @@ export default function Index() {
   console.log("isSpeaking:", assitantSpeaking);
 
   return (
-    <App title="BMW AI chat bot">
+    <App title="BMW PolicyBot">
       <main className="bg-white md:rounded-lg md:shadow-md p-6 w-full h-full flex flex-col">
+        <div className="mb-4 rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-gray-700">
+        PolicyBot generates responses using an AI system. The information provided may be incomplete, outdated,
+        or require review and verification before being relied upon for policy interpretation or decision-making.
+        </div>
         <section className="overflow-y-auto flex-grow mb-4 pb-8">
           <div className="flex flex-col space-y-4">
             {chatHistory.length === 0 ? (
