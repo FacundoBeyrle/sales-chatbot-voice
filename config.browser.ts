@@ -1,4 +1,4 @@
-import { samplePhrases } from "./prompts/sales-agent";
+import { samplePhrases } from "./prompts/agent";
 
 export const appConfig = {
   historyLength: 8,

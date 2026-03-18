@@ -1,6 +1,6 @@
 import type { AppConfig } from "./lib/edge/types.ts";
 
-import { prompt } from "./prompts/sales-agent.ts";
+import { prompt } from "./prompts/agent.ts";
 
 export const appConfig: AppConfig = {
   // This should be set in an environment variable
