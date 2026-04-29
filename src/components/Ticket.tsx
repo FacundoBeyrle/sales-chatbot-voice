@@ -12,7 +12,7 @@ export const Ticket: React.FC = () => (
     </div>
     <div className="bg-gray-100 border-gray-300 border-2 rounded-lg p-2 mr-20 w-full">
       <p className="mb-3">
-        Your feedback helps improve PolicyBot. If this answer didn’t fully meet your needs, please open a ticket
+        Your feedback helps improve PolicyBot. If this answer didn’t fully meet your needs, please open a ticket 
         <a
           href="https://example.com/ticket"
           target="_blank"
@@ -21,7 +21,7 @@ export const Ticket: React.FC = () => (
         >
           here
         </a>
-        so a developer can review your request.
+         so a developer can review your request.
       </p>
     </div>
   </div>

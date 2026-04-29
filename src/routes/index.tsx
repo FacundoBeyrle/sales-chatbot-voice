@@ -9,7 +9,6 @@ import { Ticket } from "../components/Ticket";
 
 export default function Index() {
   const [message, setMessage] = useState<string>("");
-  const [showBMWButton, setShowBMWButton] = useState(false);
   const [showEndMessage, setShowEndMessage] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
   const { currentChat, chatHistory, sendMessage, cancel, state, clear, speak, assitantSpeaking } = useChat();
@@ -41,10 +40,10 @@ export default function Index() {
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
+  // ADJUST COUNTER AS NEEDED
   useEffect(() => {
     const assistantMessageCount = chatHistory.filter((msg) => msg.role === "assistant").length;
-    setShowBMWButton(assistantMessageCount >= 10);
+    setShowTicket(assistantMessageCount >= 2);
   }, [chatHistory]);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -147,63 +146,6 @@ export default function Index() {
           {showTicket && <Ticket />} 
           <div ref={bottomRef} />
         </section>
-        {showBMWButton && (
-          <div className="mb-4 flex flex-col items-center space-y-2">
-            <p className="text-center font-semibold">Would you like more information about your BMW after completing the survey?</p>
-            <div className="flex justify-center space-x-4">
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-                onClick={() => {
-                  setShowTicket(true);
-                  setShowEndMessage(false);
-                  //log button click
-                  const userId = localStorage.getItem("chatUserId");
-                  if (!userId) {
-                    console.error("User ID not found");
-                    return;
-                  }
-                  fetch("/.netlify/functions/logButton", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ 
-                      userId, 
-                      buttonClicked: "Yes" 
-                    }),
-                  }).catch((error) => console.error("Error logging button click:", error));
-                }}
-              >
-                Yes
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-                onClick={() => {
-                  setShowEndMessage(true);
-                  setShowTicket(false);
-                   //log button click
-                   const userId = localStorage.getItem("chatUserId");
-                   if (!userId) {
-                     console.error("User ID not found");
-                     return;
-                   }
-                   fetch("/.netlify/functions/logButton", {
-                     method: "POST",
-                     headers: {
-                       "Content-Type": "application/json",
-                     },
-                     body: JSON.stringify({ 
-                       userId, 
-                       buttonClicked: "No" 
-                     }),
-                   }).catch((error) => console.error("Error logging button click:", error));
-                }}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        )}
         <section className="bg-gray-100 rounded-lg p-2">
           <form className="flex" onSubmit={handleSendMessage}>
             {chatHistory.length > 1 ? (
