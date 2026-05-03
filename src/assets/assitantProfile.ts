@@ -1,6 +1,6 @@
-import assistantImage from './portrait.jpeg';
+import assistantImage from './portrait.jpg';
 
 export const assistantProfile = {
-    name: "Sarah",
-    image: assistantImage, 
+    name: "Claire",
+    image: assistantImage,
   };
